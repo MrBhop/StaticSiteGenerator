@@ -23,7 +23,7 @@ class TestUtility(unittest.TestCase):
         md = [TextNode("This is some **invalid markdown", TextType.TEXT)]
 
         self.assertRaises(Exception, lambda: split_nodes_delimiter(md, "**", TextType.BOLD))
-    
+
     def test_split_md_delimiter_multiple_nodes(self):
         md = [
             TextNode("This is some bold text.", TextType.BOLD),
@@ -37,3 +37,19 @@ class TestUtility(unittest.TestCase):
         ]
 
         self.assertEqual(split_nodes_delimiter(md, "_", TextType.ITALIC), result)
+
+    def test_extract_markdown_images(self):
+        matches = extract_markdown_images("This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)")
+        self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+    
+    def test_extract_markdown_images_no_value(self):
+        matches = extract_markdown_images("This is a [link](youtube.com) to nothing.")
+        self.assertEqual([], matches)
+    
+    def test_extract_markdown_links(self):
+        matches = extract_markdown_links("This is a [link](youtube.com) to nothing.")
+        self.assertEqual([("link", "youtube.com")], matches)
+    
+    def test_extract_markdown_links_no_value(self):
+        matches = extract_markdown_links("This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)")
+        self.assertListEqual([], matches)
