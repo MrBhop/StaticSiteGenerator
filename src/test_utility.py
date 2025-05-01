@@ -38,6 +38,7 @@ class TestUtility(unittest.TestCase):
 
         self.assertEqual(split_nodes_delimiter(md, "_", TextType.ITALIC), result)
 
+
     def test_extract_markdown_images(self):
         matches = extract_markdown_images("This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)")
         self.assertListEqual([("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
@@ -53,3 +54,45 @@ class TestUtility(unittest.TestCase):
     def test_extract_markdown_links_no_value(self):
         matches = extract_markdown_links("This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)")
         self.assertListEqual([], matches)
+    
+
+    def test_extract_image(self):
+        node = [TextNode("This is a text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)", TextType.TEXT)]
+        result = [
+            TextNode('This is a text with an ', TextType.TEXT),
+            TextNode('image', TextType.IMAGE, 'https://i.imgur.com/zjjcJKZ.png'),
+            TextNode(' and another ', TextType.TEXT),
+            TextNode('second image', TextType.IMAGE, 'https://i.imgur.com/3elNhQu.png')
+        ]
+        self.assertEqual(split_nodes_image(node), result)
+    
+    def test_extract_image_no_match(self):
+        node = [TextNode("This is text with a [link](https://i.imgur.com/zjjcJKZ.png) and another [link](https://i.imgur.com/3elNhQu.png)", TextType.TEXT)]
+        result = [TextNode("This is text with a [link](https://i.imgur.com/zjjcJKZ.png) and another [link](https://i.imgur.com/3elNhQu.png)", TextType.TEXT)]
+        self.assertEqual(split_nodes_image(node), result)
+    
+    def test_extract_image_only_image(self):
+        node = [TextNode("![image](https://i.imgur.com/zjjcJKZ.png)", TextType.TEXT)]
+        result = [TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png")]
+        self.assertEqual(split_nodes_image(node), result)
+    
+
+    def test_extract_link(self):
+        node = [TextNode("This is a text with a [link](https://i.imgur.com/zjjcJKZ.png) and another [link](https://i.imgur.com/3elNhQu.png)", TextType.TEXT)]
+        result = [
+            TextNode('This is a text with a ', TextType.TEXT),
+            TextNode('link', TextType.LINK, 'https://i.imgur.com/zjjcJKZ.png'),
+            TextNode(' and another ', TextType.TEXT),
+            TextNode('link', TextType.LINK, 'https://i.imgur.com/3elNhQu.png')
+        ]
+        self.assertEqual(split_nodes_link(node), result)
+    
+    def test_extract_link_no_match(self):
+        node = [TextNode("This is a text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)", TextType.TEXT)]
+        result = [TextNode("This is a text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)", TextType.TEXT)]
+        self.assertEqual(split_nodes_link(node), result)
+    
+    def test_extract_link_only_link(self):
+        node = [TextNode("[link](https://i.imgur.com/zjjcJKZ.png)", TextType.TEXT)]
+        result = [TextNode("link", TextType.LINK, "https://i.imgur.com/zjjcJKZ.png")]
+        self.assertEqual(split_nodes_link(node), result)
