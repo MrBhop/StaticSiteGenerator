@@ -1,5 +1,4 @@
 import unittest
-from block_markdown import *
 from blocknode import *
 
 
@@ -56,7 +55,7 @@ class TestBlockType(unittest.TestCase):
         md_block = markdown_to_blocks("""
 ## This is a heading of level 2
 """)
-        result = block_to_block_type(md_block[0])
+        result, heading_level = block_to_block_type(md_block[0])
         self.assertEqual(result, BlockType.HEADING)
     
     
@@ -67,7 +66,7 @@ def func(value):
     print(value)
 ```
 """)
-        result = block_to_block_type(md_block[0])
+        result, heading_level = block_to_block_type(md_block[0])
         self.assertEqual(result, BlockType.CODE)
     
     
@@ -76,7 +75,7 @@ def func(value):
 > Writing Tests is a huge Pain.
 > Seriously....
 """)
-        result = block_to_block_type(md_block[0])
+        result, heading_level = block_to_block_type(md_block[0])
         self.assertEqual(result, BlockType.QUOTE)
     
     
@@ -85,7 +84,7 @@ def func(value):
 - writing Code
 - Wrting UnitTests
 """)
-        result = block_to_block_type(md_block[0])
+        result, heading_level = block_to_block_type(md_block[0])
         self.assertEqual(result, BlockType.ULIST)
     
     
@@ -95,14 +94,14 @@ def func(value):
 2. Get ready
 3. Go to work
 """)
-        result = block_to_block_type(md_block[0])
+        result, heading_level = block_to_block_type(md_block[0])
         self.assertEqual(result, BlockType.OLIST)
     
     def test_paragraph(self):
         md_block = markdown_to_blocks("""
 #This should be a paragraph
 """)
-        result = block_to_block_type(md_block[0])
+        result, heading_level = block_to_block_type(md_block[0])
         self.assertEqual(result, BlockType.PARAGRAPH)
     
         

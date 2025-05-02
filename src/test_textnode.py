@@ -30,14 +30,14 @@ class TestTextNode(unittest.TestCase):
 
     def test_text(self):
         node = TextNode("This is a text node", TextType.TEXT)
-        html_node = text_node_to_html_node(node)
+        html_node = node.to_html_node()
         self.assertEqual(html_node.tag, None)
         self.assertEqual(html_node.value, "This is a text node")
     
 
     def test_a(self):
         node = TextNode("Link", TextType.LINK, "youtube.com")
-        html = text_node_to_html_node(node)
+        html = node.to_html_node()
         self.assertEqual(html.to_html(), '<a href="youtube.com">Link</a>')
 
 
