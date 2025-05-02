@@ -91,3 +91,15 @@ def __split_nodes_with_function(old_nodes, extractor_function, text_type):
             last_match = match
     
     return new_nodes
+
+
+def text_to_text_node(text):
+    original_node = TextNode(text, TextType.TEXT)
+    
+    with_links = split_nodes_link([original_node])
+    with_images = split_nodes_image(with_links)
+    with_code = split_nodes_delimiter(with_images, "`", TextType.CODE)
+    with_bold = split_nodes_delimiter(with_code, "**", TextType.BOLD)
+    with_italic = split_nodes_delimiter(with_bold, "_", TextType.ITALIC)
+    
+    return with_italic
