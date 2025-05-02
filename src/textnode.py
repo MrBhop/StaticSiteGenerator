@@ -1,6 +1,8 @@
 from enum import Enum
 from htmlnode import LeafNode
 
+
+
 class TextType(Enum):
     TEXT = "text"
     BOLD = "bold"
@@ -16,6 +18,7 @@ class TextNode:
         self.text_type = text_type
         self.url = url
     
+
     def __eq__(self, value):
         if self.text != value.text:
             return False
@@ -27,6 +30,7 @@ class TextNode:
             return False
         
         return True
+
 
     def __repr__(self):
         return f"TextNode({self.text}, {self.text_type.value}, {self.url})"
@@ -49,4 +53,3 @@ def text_node_to_html_node(text_node):
             return LeafNode("img", "", {"src":text_node.url, "alt":text_node.text})
         case _:
             raise Exception("Text node has unsupported text_type")
-        

@@ -1,6 +1,8 @@
 from textnode import TextNode, TextType
 import re
 
+
+
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
 
@@ -31,33 +33,28 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     return new_nodes
 
 
+def get_iterator_and_count(pattern, text):
+    return re.finditer(pattern, text), len(re.findall(pattern, text))
+
 def extract_markdown_images(text):
     pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
-    return re.findall(pattern, text)
-
-def __extract_markdown_images_iterator(text):
-    pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
-    return re.finditer(pattern, text), len(re.findall(pattern, text))
+    return get_iterator_and_count(pattern, text)
 
 
 def extract_markdown_links(text):
     pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
-    return re.findall(pattern, text)
-
-def __extract_markdown_links_iterator(text):
-    pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
-    return re.finditer(pattern, text), len(re.findall(pattern, text))
+    return get_iterator_and_count(pattern, text)
 
 
 def split_nodes_image(old_nodes):
-    return split_nodes_with_function(old_nodes, __extract_markdown_images_iterator, TextType.IMAGE)
+    return __split_nodes_with_function(old_nodes, extract_markdown_images, TextType.IMAGE)
 
 
 def split_nodes_link(old_nodes):
-    return split_nodes_with_function(old_nodes, __extract_markdown_links_iterator, TextType.LINK)
+    return __split_nodes_with_function(old_nodes, extract_markdown_links, TextType.LINK)
 
 
-def split_nodes_with_function(old_nodes, extractor_function, text_type):
+def __split_nodes_with_function(old_nodes, extractor_function, text_type):
     new_nodes = []
 
     for node in old_nodes:

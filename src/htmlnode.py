@@ -1,6 +1,8 @@
 from enum import Enum
 from functools import reduce
 
+
+
 class HTMLNode:
     def __init__(self, tag=None, value=None, children=None, props=None):
         self.tag = tag
@@ -8,23 +10,28 @@ class HTMLNode:
         self.children = children
         self.props = props
     
+
     def to_html(self):
         raise NotImplementedError()
     
+
     def props_to_html(self):
         if self.props == None:
             return ""
         
         return reduce(lambda accumulator, item: accumulator + f' {item[0]}="{item[1]}"', self.props.items(), "")
-        
+    
+
     def __repr__(self):
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
+
 
 
 class LeafNode(HTMLNode):
     def __init__(self, tag, value, props=None):
         super().__init__(tag, value, None, props)
     
+
     def to_html(self):
         if self.value == None:
             raise ValueError("Leaf node has no value")
@@ -35,10 +42,12 @@ class LeafNode(HTMLNode):
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
     
 
+
 class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None):
         super().__init__(tag, None, children, props)
     
+
     def to_html(self):
         if self.tag == None:
             raise ValueError("Parent node has no tag")
