@@ -7,7 +7,7 @@ from generate_page import *
 
 static_directory_path = "./static"
 public_directory_path = "./public"
-content_path = "./content/index.md"
+content_directory_path = "./content"
 template_path = "./template.html"
 
 
@@ -31,15 +31,14 @@ def copy_directory_recursive(source, destination, first_level_call=True):
             copy_directory_recursive(current_source, current_destination, False)
         elif os.path.isfile(current_source):
             shutil.copy(current_source, current_destination)
-        else:
-            raise Exception("path is neither a file nor a directory")
     
 
 def main():
     print("\ncopying static files to public directory...")
     copy_directory_recursive(static_directory_path, public_directory_path)
     print(f"copied files from '{static_directory_path}' to '{public_directory_path}'\n")
-    generate_page(content_path, template_path, f"{public_directory_path}/index.html")
+    generate_page_recursive(content_directory_path, template_path, public_directory_path)
+    
     
 
 
