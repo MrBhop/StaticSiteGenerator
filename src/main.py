@@ -2,11 +2,13 @@ from textnode import *
 import os
 import shutil
 from generate_page import *
+import sys
 
 
 
 static_directory_path = "./static"
 public_directory_path = "./public"
+docs_directory_path = "./docs"
 content_directory_path = "./content"
 template_path = "./template.html"
 
@@ -34,10 +36,16 @@ def copy_directory_recursive(source, destination, first_level_call=True):
     
 
 def main():
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+    else:
+        basepath = r"/"
+    
     print("\ncopying static files to public directory...")
-    copy_directory_recursive(static_directory_path, public_directory_path)
-    print(f"copied files from '{static_directory_path}' to '{public_directory_path}'\n")
-    generate_page_recursive(content_directory_path, template_path, public_directory_path)
+    copy_directory_recursive(static_directory_path, docs_directory_path)
+    print(f"copied files from '{static_directory_path}' to '{docs_directory_path}'\n")
+    generate_page_recursive(basepath, content_directory_path, template_path, docs_directory_path)
+    print("\nDone")
     
     
 

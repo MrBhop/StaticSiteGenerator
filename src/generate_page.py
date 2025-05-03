@@ -4,7 +4,7 @@ import os
 import re
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(basepath, from_path, template_path, dest_path):
     print(f"Generating page from '{from_path}' to '{dest_path}' using '{template_path}'")
     
     md_file = open(from_path)
@@ -18,7 +18,7 @@ def generate_page(from_path, template_path, dest_path):
     content_html = markdown_to_html_node(markdown).to_html()
     title = extract_title(markdown)
     
-    new_html = template.replace("{{ Title }}", title).replace("{{ Content }}", content_html)
+    new_html = template.replace("{{ Title }}", title).replace("{{ Content }}", content_html).replace('href="/', f'href="{basepath}').replace('src="/', f'src="{basepath}')
     
     dir_path = os.path.dirname(dest_path)
     if not os.path.exists(dir_path):
@@ -29,15 +29,15 @@ def generate_page(from_path, template_path, dest_path):
     output_file.close()
 
 
-def generate_page_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_page_recursive(basepath, dir_path_content, template_path, dest_dir_path):
     for item in os.listdir(dir_path_content):
         current_source = os.path.join(dir_path_content, item)
         current_destination = os.path.join(dest_dir_path, item)
         
         if os.path.isdir(current_source):
-            generate_page_recursive(current_source, template_path, current_destination)
+            generate_page_recursive(basepath, current_source, template_path, current_destination)
         else:
-            generate_page(current_source, template_path, replace_file_extension(current_destination, "html"))
+            generate_page(basepath, current_source, template_path, replace_file_extension(current_destination, "html"))
 
 
 def replace_file_extension(file_name, new_extension):
